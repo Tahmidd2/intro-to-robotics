@@ -1,0 +1,6 @@
+2 is the claw. 
+3 is the arm. 
+left motor is 19. 
+right motor is 20.
+
+Motors for the sensors haven't been added, as we haven't started using them
