@@ -170,7 +170,7 @@ void autonomous(void)
 
     LeftMotor.spin(forward);
     RightMotor.spin(forward);
-    wait(.25, seconds);
+    wait(2, seconds);
     LeftMotor.stop();
     RightMotor.stop();
 
@@ -184,6 +184,10 @@ void userControl(void)
     // place driver control in this while loop
     while (true)
     {
+        LeftMotor.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position()), percent);
+        RightMotor.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position()), percent);
+        LeftMotor.spin(forward);
+        RightMotor.spin(forward);
         wait(20, msec);
     }
 }
@@ -221,10 +225,6 @@ int main()
 
     while (true)
     {
-        LeftMotor.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position()), percent);
-        RightMotor.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position()), percent);
-        LeftMotor.spin(forward);
-        RightMotor.spin(forward);
 
         wait(5, msec);
     }
