@@ -1,10 +1,11 @@
 // THIS CODE DOESN"T WORK, has to be tested and fixed
+// red side
 void autonomous(void)
 {
     Brain.Screen.clearScreen();
     Brain.Screen.print("autonomous code");
 
-    // Lift arm
+    // Lift arm 
     ArmMotor.spin(forward);
     wait(1, seconds);
     ArmMotor.stop();
@@ -21,9 +22,9 @@ void autonomous(void)
     // turn right 90 degrees
     LeftMotor.setVelocity(100, percent);
     RightMotor.setVelocity(100, percent);
-    LeftMotor.spin(forward);
-    RightMotor.spin(reverse);
-    wait(0.2, seconds); // time needs to be adjusted
+    LeftMotor.spin(reverse);
+    RightMotor.spin(forward);
+    wait(0.15, seconds); // time needs to be adjusted
     LeftMotor.stop();
     RightMotor.stop();
 
