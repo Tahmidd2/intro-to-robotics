@@ -70,9 +70,10 @@ int main()
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
 
-    // Calibration for red detection (adjust these values based on testing)
-    const int RED_BRIGHTNESS_THRESHOLD = 60; // Higher brightness = darker surface
-    const int RED_HUE_THRESHOLD = 10;        // Lower hue values = red colors
+    // Calibration for blue detection (adjust these values based on testing)
+    const int BLUE_BRIGHTNESS_THRESHOLD = 60; // Higher brightness = darker surface
+    const int BLUE_HUE_MIN = 180;             // Blue colors typically 180-240 hue
+    const int BLUE_HUE_MAX = 240;
 
     while (true)
     {
@@ -90,12 +91,14 @@ int main()
         Brain.Screen.print("Hue: %d", hue);
         Brain.Screen.newLine();
 
-        // Check if red is detected
-        bool redDetected = (brightness > RED_BRIGHTNESS_THRESHOLD && hue < RED_HUE_THRESHOLD);
+        // Check if blue is detected
+        bool blueDetected = (brightness > BLUE_BRIGHTNESS_THRESHOLD &&
+                             hue >= BLUE_HUE_MIN &&
+                             hue <= BLUE_HUE_MAX);
 
-        if (redDetected)
+        if (blueDetected)
         {
-            Brain.Screen.print("Status: RED DETECTED - GOING STRAIGHT");
+            Brain.Screen.print("Status: BLUE DETECTED - GOING STRAIGHT");
             // Drive straight forward
             LeftDriveSmart.setVelocity(50, percent);
             RightDriveSmart.setVelocity(50, percent);
@@ -104,14 +107,16 @@ int main()
         }
         else
         {
-            Brain.Screen.print("Status: No red - Stopped");
+            Brain.Screen.print("Status: No blue - Stopped");
+            // Stop the robot
             LeftDriveSmart.stop();
             RightDriveSmart.stop();
         }
 
         Brain.Screen.newLine();
-        Brain.Screen.print("Red Detected: %s", redDetected ? "YES" : "NO");
+        Brain.Screen.print("Blue Detected: %s", blueDetected ? "YES" : "NO");
 
+        // A brief delay to allow text to be printed without distortion or tearing
         wait(50, msec);
     }
 }
