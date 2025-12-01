@@ -51,8 +51,7 @@ void vexcodeInit()
     initializeRandomSeed();
 }
 
-// Helper to make playing sounds from the V5 in VEXcode easier and
-// keeps the code cleaner by making it clear what is happening.
+// helper
 void playVexcodeSound(const char *soundName)
 {
     printf("VEXPlaySound:%s\n", soundName);
@@ -86,7 +85,7 @@ int main()
         Brain.Screen.clearScreen();
         Brain.Screen.setCursor(1, 1);
 
-        // Use the correct sensor name - RangeFinderC
+        // RangeFinderC
         Brain.Screen.print("Found Object?: %s", RangeFinderC.foundObject() ? "TRUE" : "FALSE");
         Brain.Screen.newLine();
 
@@ -95,10 +94,10 @@ int main()
 
         Brain.Screen.print("Distance - MM: %.2f", RangeFinderC.distance(mm));
 
-        // Use inches instead of millimeters for distance checking
+        // used inches instead of mm as im more familiar
         double distanceInches = RangeFinderC.distance(inches);
 
-        // Add sensor validation and fix the conditional logic with larger distances in inches
+        // adding nested if conditional for action
         if (RangeFinderC.foundObject())
         {
             if (distanceInches > 40)
@@ -132,14 +131,14 @@ int main()
             }
             else
             {
-                // Default case for distances between 5-10 inches
+                // stop otherwise
                 Drivetrain.stop();
                 Brain.Screen.print("Status: In Stopping Range");
             }
         }
         else
         {
-            // No object detected - stop the robot
+            // if nothings there then we dont need to move
             Drivetrain.stop();
             Brain.Screen.print("No object detected!");
         }

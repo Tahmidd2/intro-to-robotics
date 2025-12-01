@@ -82,7 +82,7 @@ using namespace vex;
 // Optional: Controller button handler for manual control
 void controller_R1_Pressed()
 {
-    // Move arm down to lower position
+    // meant to override the constant 90 degree angle
     ArmMotor.spin(reverse, 50, percent);
     while (Controller1.ButtonR1.pressing())
     {
@@ -93,7 +93,7 @@ void controller_R1_Pressed()
 
 void controller_L1_Pressed()
 {
-    // Move arm up
+    // meant to override the constant 90 degree angle
     ArmMotor.spin(forward, 50, percent);
     while (Controller1.ButtonL1.pressing())
     {
@@ -112,19 +112,18 @@ int main()
     Controller1.ButtonL1.pressed(controller_L1_Pressed);
 
     const int TARGET_ANGLE = 90;
-    const int TOLERANCE = 3; // ±3 degrees tolerance
+    const int TOLERANCE = 3; // ±3 degrees tolerance because why not
 
-    // Print all Potentiometer sensing values to the screen in an infinite loop
     while (true)
     {
         // Clear the screen and set the cursor to top left corner on each loop
         Brain.Screen.clearScreen();
         Brain.Screen.setCursor(1, 1);
 
-        // Read current angle
+        // get current angle
         double currentAngle = PotentiometerA.angle(degrees);
 
-        // Display potentiometer values
+        // brain print for extra convinience
         Brain.Screen.print("Angle - Degrees: %.2f", currentAngle);
         Brain.Screen.newLine();
         Brain.Screen.print("Angle - Percent: %d", PotentiometerA.angle(percent));
@@ -132,27 +131,27 @@ int main()
         Brain.Screen.print("Angle - Turns: %.2f", PotentiometerA.angle(turns));
         Brain.Screen.newLine();
 
-        // Smart position control with tolerance
+        // using tolerance
         if (currentAngle < TARGET_ANGLE - TOLERANCE)
         {
-            // Too low - move up
+            // go up if its below
             ArmMotor.spin(forward, 50, percent);
             Brain.Screen.print("Status: Moving UP to 90 deg");
         }
         else if (currentAngle > TARGET_ANGLE + TOLERANCE)
         {
-            // Too high - move down
+            // go down if its above
             ArmMotor.spin(reverse, 50, percent);
             Brain.Screen.print("Status: Moving DOWN to 90 deg");
         }
         else
         {
-            // Within tolerance - stop
+            // if it's within reasonable value (tolerance) we stop
             ArmMotor.stop();
             Brain.Screen.print("Status: AT TARGET POSITION!");
         }
 
-        // A brief delay to allow text to be printed without distortion or tearing
+        // good practice
         wait(50, msec);
     }
 }

@@ -72,7 +72,7 @@ int main()
 
     // Calibration for blue detection (adjust these values based on testing)
     const int BLUE_BRIGHTNESS_THRESHOLD = 60; // Higher brightness = darker surface
-    const int BLUE_HUE_MIN = 180;             // Blue colors typically 180-240 hue
+    const int BLUE_HUE_MIN = 180;             // Blue colors (I googled)
     const int BLUE_HUE_MAX = 240;
 
     while (true)
@@ -80,30 +80,30 @@ int main()
         Brain.Screen.clearScreen();
         Brain.Screen.setCursor(1, 1);
 
-        // Get line tracker values
+        // need to get values
         int brightness = LineTrackerH.value(percent);
         color detectedColor = LineTrackerH.color();
         int hue = LineTrackerH.hue();
 
-        // Display sensor readings
+        // added to brain for additional functionality
         Brain.Screen.print("Brightness: %d%%", brightness);
         Brain.Screen.newLine();
         Brain.Screen.print("Hue: %d", hue);
         Brain.Screen.newLine();
 
-        // Check if blue is detected
+        // need to know if blue is there 
         bool blueDetected = (brightness > BLUE_BRIGHTNESS_THRESHOLD &&
                              hue >= BLUE_HUE_MIN &&
                              hue <= BLUE_HUE_MAX);
 
-        if (blueDetected)
+        if (blueDetected) //condition for moving forward
         {
             Brain.Screen.print("Status: BLUE DETECTED - GOING STRAIGHT");
             // Drive straight forward
             LeftDriveSmart.setVelocity(50, percent);
             RightDriveSmart.setVelocity(50, percent);
-            LeftDriveSmart.spin(forward);
-            RightDriveSmart.spin(forward);
+            LeftDriveSmart.spin(reverse);
+            RightDriveSmart.spin(reverse);
         }
         else
         {
@@ -116,7 +116,7 @@ int main()
         Brain.Screen.newLine();
         Brain.Screen.print("Blue Detected: %s", blueDetected ? "YES" : "NO");
 
-        // A brief delay to allow text to be printed without distortion or tearing
+        // A brief delay, good practice
         wait(50, msec);
     }
 }

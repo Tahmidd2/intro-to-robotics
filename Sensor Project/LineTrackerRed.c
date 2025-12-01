@@ -79,28 +79,28 @@ int main()
         Brain.Screen.clearScreen();
         Brain.Screen.setCursor(1, 1);
 
-        // Get line tracker values
+        // getting the actual value
         int brightness = LineTrackerH.value(percent);
         color detectedColor = LineTrackerH.color();
         int hue = LineTrackerH.hue();
 
-        // Display sensor readings
+        // brain print for additional convinience 
         Brain.Screen.print("Brightness: %d%%", brightness);
         Brain.Screen.newLine();
         Brain.Screen.print("Hue: %d", hue);
         Brain.Screen.newLine();
 
-        // Check if red is detected
+        // checking if red's actually there
         bool redDetected = (brightness > RED_BRIGHTNESS_THRESHOLD && hue < RED_HUE_THRESHOLD);
 
         if (redDetected)
         {
             Brain.Screen.print("Status: RED DETECTED - GOING STRAIGHT");
-            // Drive straight forward
+            // Drive straight forward (drivetrain is backwards that's why its reverse)
             LeftDriveSmart.setVelocity(50, percent);
             RightDriveSmart.setVelocity(50, percent);
-            LeftDriveSmart.spin(forward);
-            RightDriveSmart.spin(forward);
+            LeftDriveSmart.spin(reverse);
+            RightDriveSmart.spin(reverse);
         }
         else
         {
