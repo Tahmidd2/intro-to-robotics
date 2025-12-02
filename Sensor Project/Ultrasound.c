@@ -124,8 +124,8 @@ int main()
                 LeftDriveSmart.spin(forward);
                 Brain.Screen.print("Status: Close - Slow Speed");
             }
-            else if (distanceInches < 5)
-            { // ~5 inches = ~127mm
+            else if (distanceInches < 8)
+            { 
                 Drivetrain.stop();
                 Brain.Screen.print("Status: Very Close - STOPPED");
             }
