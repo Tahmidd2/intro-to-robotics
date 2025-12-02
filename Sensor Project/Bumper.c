@@ -27,15 +27,12 @@ brain Brain;
 // Robot configuration code.
 motor LeftDriveSmart = motor(PORT19, ratio18_1, false);
 motor RightDriveSmart = motor(PORT20, ratio18_1, true);
-drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 40, mm, 1);
+drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 10, mm, 1);
 
+bumper BumperA = bumper(Brain.ThreeWirePort.F);
 motor ArmMotor = motor(PORT3, ratio18_1, false);
-motor ClawMotor = motor(PORT2, ratio18_1, false);
 
-bumper BumperA = bumper(Brain.ThreeWirePort.A);
-pot PotentiometerA = pot(Brain.ThreeWirePort.A);
-sonar RangeFinder = sonar(Brain.ThreeWirePort.C, Brain.ThreeWirePort.D);
-line LineTracker = line(Brain.ThreeWirePort.H);
+motor ClawMotor = motor(PORT2, ratio18_1, false);
 
 // generating and setting random seed
 void initializeRandomSeed()
@@ -53,6 +50,7 @@ void initializeRandomSeed()
 
 void vexcodeInit()
 {
+
     // Initializing random seed.
     initializeRandomSeed();
 }
@@ -82,20 +80,33 @@ void bumpaction()
     LeftDriveSmart.spin(forward);
     wait(.25, seconds);
 
-    // Lower the arm
-    ArmMotor.spinFor(reverse, 600, degrees, 50, velocityUnits::pct);
-    // Open the claw to release object
-    ClawMotor.spinFor(forward, 180, degrees, 50, velocityUnits::pct);
-    // Back away from scoring area
-    Drivetrain.driveFor(reverse, 5, inches, 50, velocityUnits::pct);
-    // Reset arm position (optional - adjust as needed)
-    ArmMotor.spinFor(forward, 300, degrees, 50, velocityUnits::pct);
+    ArmMotor.spin(forward);
+    wait(1.5, seconds);
+    ArmMotor.stop();
+    wait(.5, seconds);
+
+    ClawMotor.spin(forward);
+    wait(3, seconds);
+
+    LeftDriveSmart.spin(forward);
+    RightDriveSmart.spin(forward);
+    wait(1, seconds);
+    LeftDriveSmart.stop();
+    RightDriveSmart.stop();
+
+    ArmMotor.spin(reverse);
+    wait(1, seconds);
 }
 
 int main()
 {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
+    ArmMotor.spin(forward);
+    wait(2, seconds);
+    ArmMotor.setVelocity(100, percent);
+    ArmMotor.spin(reverse);
+    wait(.3, seconds);
     // Register bumper press callback
     BumperA.pressed(bumpaction);
     while (true)
@@ -106,11 +117,8 @@ int main()
         // Display sensor readings
         Brain.Screen.print("Bumper: %s", BumperA.pressing() ? "PRESSED" : "Ready");
         Brain.Screen.newLine();
-        Brain.Screen.print("Arm Angle: %.1f deg", PotentiometerA.angle(degrees));
         Brain.Screen.newLine();
-        Brain.Screen.print("Distance: %.1f inches", RangeFinder.distance(inches));
         Brain.Screen.newLine();
-        Brain.Screen.print("Line Brightness: %d", LineTracker.value(percent));
 
         // Normal driving code can go here
         // For example, you could add joystick control or autonomous driving
