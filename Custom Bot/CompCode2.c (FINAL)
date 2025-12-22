@@ -25,9 +25,8 @@ brain Brain;
 // END V5 MACROS
 
 // Robot configuration code.
-motor LeftDriveSmart = motor(PORT19, ratio18_1, false);
-motor RightDriveSmart = motor(PORT20, ratio18_1, true);
-drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 10, mm, 1);
+motor LeftMotor = motor(PORT19, ratio18_1, false);
+motor RightMotor = motor(PORT20, ratio18_1, true);
 
 motor ArmMotor = motor(PORT3, ratio18_1, false);
 
@@ -139,7 +138,8 @@ void controller_L2_Pressed()
 
 void move(void)
 {
-    Drivetrain.drive(reverse);
+    LeftMotor.spin(reverse);
+    RightMotor.spin(reverse);
     wait(1, seconds);
 }
 
@@ -191,10 +191,10 @@ void userControl(void)
     // place driver control in this while loop
     while (true)
     {
-        LeftDriveSmart.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position()), percent);
-        RightDriveSmart.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position()), percent);
-        LeftDriveSmart.spin(forward);
-        RightDriveSmart.spin(forward);
+        LeftMotor.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position()), percent);
+        RightMotor.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position()), percent);
+        LeftMotor.spin(forward);
+        RightMotor.spin(forward);
         wait(20, msec);
     }
 }
