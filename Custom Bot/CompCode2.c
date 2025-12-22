@@ -25,13 +25,14 @@ brain Brain;
 // END V5 MACROS
 
 // Robot configuration code.
-motor ArmMotor = motor(PORT3, ratio18_1, false);
-
-controller Controller1 = controller(primary);
-pot PotentiometerF = pot(Brain.ThreeWirePort.F);
 motor LeftDriveSmart = motor(PORT19, ratio18_1, false);
 motor RightDriveSmart = motor(PORT20, ratio18_1, true);
 drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 10, mm, 1);
+
+motor ArmMotor = motor(PORT3, ratio18_1, false);
+
+pot PotentiometerF = pot(Brain.ThreeWirePort.F);
+controller Controller1 = controller(primary);
 
 // generating and setting random seed
 void initializeRandomSeed()
@@ -66,7 +67,6 @@ void playVexcodeSound(const char *soundName)
 bool RemoteControlCodeEnabled = true;
 
 #pragma endregion VEXcode Generated Robot Configuration
-
 // ----------------------------------------------------------------------------
 //
 //    Project:        Clawbot Controller with Events
@@ -80,7 +80,6 @@ bool RemoteControlCodeEnabled = true;
 //                    Right Motor in Port 10
 //
 // ----------------------------------------------------------------------------
-
 #include "vex.h"
 
 using namespace vex;
@@ -138,12 +137,72 @@ void controller_L2_Pressed()
     wait(.2, seconds);
 }
 
+void move(void)
+{
+    Drivetrain.drive(reverse);
+    wait(1, seconds);
+}
+
+void preAutonomous(void)
+{
+    // actions to do when the program starts
+    Brain.Screen.clearScreen();
+    Brain.Screen.print("pre auton code");
+    wait(1, seconds);
+}
+
+void autonomous(void)
+{
+    Brain.Screen.clearScreen();
+    Brain.Screen.print("autonomous code");
+
+    int angle = PotentiometerF.angle(degrees);
+
+    wait(20, msec);
+    ArmMotor.spin(forward);
+    wait(.8, seconds);
+    ArmMotor.stop();
+
+    wait(10, msec);
+    LeftMotor.setVelocity(85, percent);
+    RightMotor.setVelocity(85, percent);
+    LeftMotor.spin(reverse);
+    RightMotor.spin(reverse);
+    wait(1.5, seconds);
+
+    ArmMotor.spin(reverse);
+    wait(.5, seconds);
+    ArmMotor.stop();
+    wait(300, msec);
+
+    LeftMotor.spin(forward);
+    RightMotor.spin(forward);
+    wait(.5, seconds);
+    LeftMotor.stop();
+    RightMotor.stop();
+
+    ArmMotor.spin(forward);
+    wait(.75, seconds);
+}
+
+void userControl(void)
+{
+    Brain.Screen.clearScreen();
+    // place driver control in this while loop
+    while (true)
+    {
+        LeftDriveSmart.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position()), percent);
+        RightDriveSmart.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position()), percent);
+        LeftDriveSmart.spin(forward);
+        RightDriveSmart.spin(forward);
+        wait(20, msec);
+    }
+}
+
 int main()
 {
     // Initializing Robot Configuration. DO NOT REMOVE!
     vexcodeInit();
-
-    Brain.Screen.print(PotentiometerF.angle(degrees));
 
     // Create Controller callback events - 15 msec delay to ensure events get registered
     Controller1.ButtonL1.pressed(controller_L1_Pressed);
@@ -154,15 +213,24 @@ int main()
 
     // Configure Arm and Claw motor hold settings and velocity
     ArmMotor.setStopping(hold);
-    ArmMotor.setVelocity(45, percent);
+    ArmMotor.setVelocity(60, percent);
 
-    // Main Controller loop to set motors to controller axis postiions
+    // Main Controller loop for arcade drive
+
+    competition Competition;
+
+    // Set up callbacks for autonomous and driver control periods.
+    Competition.autonomous(autonomous);
+    Competition.drivercontrol(userControl);
+
+    // Run the pre-autonomous function.
+    preAutonomous();
+
+    autonomous();
+
     while (true)
     {
-        LeftMotor.setVelocity((-Controller1.Axis3.position() + Controller1.Axis1.position()), percent);
-        RightMotor.setVelocity((-Controller1.Axis3.position() - Controller1.Axis1.position()), percent);
-        LeftMotor.spin(forward);
-        RightMotor.spin(forward);
-        wait(20, msec);
+
+        wait(5, msec);
     }
 }
